@@ -1,5 +1,7 @@
 <?php
 
+header('Access-Control-Allow-Origin: *');
+
 /**
  * @property  $uri
  */
@@ -11,7 +13,7 @@ class Asset extends CI_Controller {
     }
 
     private function get_3dtiles_path( $asset_id){
-        return FCPATH . 'assets\\' . $asset_id . '.3dtiles';
+        return FCPATH . 'assets/' . $asset_id . '.3dtiles';
     }
 
     private function response_tileset_json($asset_id) {
@@ -29,10 +31,15 @@ class Asset extends CI_Controller {
         /** @noinspection SqlNoDataSourceInspection */
         $query =  "SELECT content FROM media WHERE key='tileset.json'";
 
-        $stmt = $db->query($query);
+        $result = $db->query($query);
+
+        if(!$result) {
+            die("Execute query error, because: ". print_r($db->errorInfo(), true));
+            return;
+        }
 
         // When only one row is expected - to get that only row. For example,
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $result->fetch(PDO::FETCH_ASSOC);
 
         $ret = gzdecode($row['content']);
 
@@ -59,10 +66,15 @@ class Asset extends CI_Controller {
         /** @noinspection SqlNoDataSourceInspection */
         $query =  "SELECT content FROM media WHERE key=" . "'". $key . "'";
 
-        $stmt = $db->query($query);
+        $result = $db->query($query);
+
+        if(!$result) {
+            die("Execute query error, because: ". print_r($db->errorInfo(), true));
+            return;
+        }
 
         // When only one row is expected - to get that only row. For example,
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $result->fetch(PDO::FETCH_ASSOC);
 
         $ret = gzdecode($row['content']);
 
